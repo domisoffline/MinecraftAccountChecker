@@ -64,3 +64,4 @@ try:
             checkNameChange()
 except:
      print(f"{Fore.RED}[FAIL]{Style.RESET_ALL} | Unexpected Error Occurred When Attempting To Run Program.")
+     print(os.error)
