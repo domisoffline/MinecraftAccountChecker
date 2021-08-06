@@ -63,7 +63,10 @@ def getUsername():
         "Authorization" : f"Bearer {token}"
     }
     r = requests.get("https://api.minecraftservices.com/minecraft/profile", headers=headers)
-    username = r.json()['name']
+    try:
+        username = r.json()['name']
+    except:
+        username = 'Error Trying To Get Username'
 
 
 def checkNameChange():
