@@ -4,12 +4,12 @@ import os
 from colorama import init, Style, Fore
 from datetime import datetime
 init()
-with open('C:\\Users\\Dominic\\OneDrive - Brunswick Secondary College\\Desktop\\Code\\Minecraft\\vaild.txt', 'w+') as f:
+with open('.\\valid.txt', 'w+') as f:
     f.truncate()
 failedToLogin = False
 canlogin = []
 try:
-    if os.path.getsize('C:\\Users\\Dominic\\OneDrive - Brunswick Secondary College\\Desktop\\Code\\Minecraft\\accounts.txt') > 0:
+    if os.path.getsize('.\\accounts.txt') > 0:
         pass
     else:
         print(f"{Fore.RED}[FAIL]{Style.RESET_ALL} | Please enter accounts in proper format in accounts.txt file")
@@ -47,7 +47,7 @@ try:
             if r.json()['nameChangeAllowed'] == True:
                 print(f"{Fore.GREEN}[SUCCESS]{Style.RESET_ALL} | Account: {email} can namechange!")
                 canlogin.append(email)
-                with open('C:\\Users\\Dominic\\OneDrive - Brunswick Secondary College\\Desktop\\Code\\Minecraft\\vaild.txt', 'a') as f:
+                with open('.\\valid.txt', 'a') as f:
                     f.write(f'{email}:{password}\n')
             elif r.json()['nameChangeAllowed'] == False:
                 print(f"{Fore.RED}[FAIL]{Style.RESET_ALL} | Account: {email} cannot namechange!")
@@ -55,7 +55,7 @@ try:
                 print(f"{Fore.RED}[FAIL]{Style.RESET_ALL} | Encountered an unexpected error when trying to get info for account: {email}")
         else:
             pass
-    with open('C:\\Users\\Dominic\\OneDrive - Brunswick Secondary College\\Desktop\\Code\\Minecraft\\accounts.txt', 'r') as f:
+    with open('.\\accounts.txt', 'r') as f:
         for line in f:
             email, password = line.split(':')
             email = email.strip()
