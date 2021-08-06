@@ -37,6 +37,7 @@ def accessToken():
         print(f"{Fore.GREEN}[SUCCESS]{Style.RESET_ALL} | Successfully logged into {email}")
         if debugmode == True:
             print(response_json)
+        failedToLogin = False
         pass
     except:
         failedToLogin = True
