@@ -98,7 +98,8 @@ with open('.\\accounts.txt', 'r') as f:
         password = password.strip()
         accessToken()
         checkAccType()
-        getUsername()
+        if failedToLogin == False:
+            getUsername()
         checkNameChange()
         if namechange == True:
             namechange = 'True'
