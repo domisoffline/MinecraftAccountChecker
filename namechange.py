@@ -4,7 +4,6 @@ import os
 from colorama import init, Style, Fore
 from datetime import datetime
 init()
-proxynum = 0
 failedToLogin = True
 debugmode = False # Warning! Enabling This Will Expose Your Auth Keys, Tokens are Other Sensitive Info in the Console. Because of this, it is recommended you leave this off for normal usage.
 token = ''
@@ -18,6 +17,7 @@ if os.path.getsize('.\\accounts.txt') > 0:
 else:
     print(f"{Fore.RED}[FAIL]{Style.RESET_ALL} | Please enter accounts in proper format in accounts.txt file")
     os.abort()
+
 def accessToken(proxy):
     global token
     global failedToLogin
@@ -39,6 +39,9 @@ def accessToken(proxy):
         if debugmode == True:
             print(response_json)
         failedToLogin = False
+        canlogin.append(email)
+        with open('.\\valid.txt', 'a') as f:
+            f.write(f'{email}:{password}\n')
         pass
     except:
         failedToLogin = True
@@ -68,9 +71,7 @@ def checkNameChange(proxy):
     if failedToLogin != True:
         if r.json()['nameChangeAllowed'] == True:
             namechange = True
-            canlogin.append(email)
-            with open('.\\valid.txt', 'a') as f:
-                f.write(f'{email}:{password}\n')
+            print(f'TEST {email}')
             if debugmode == True:
                 print(r.json())
         elif r.json()['nameChangeAllowed'] == False:
@@ -86,6 +87,7 @@ def checkNameChange(proxy):
 
     r = requests.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers=headers, proxies={'http' : f'{proxy}'})
 with open('.\\accounts.txt', 'r') as f:
+    proxynum = 0
     for line in f:
         email, password = line.split(':')
         email = email.strip()
@@ -118,3 +120,4 @@ Username: {username}
 Namechange: {namechange}
                 """)
             proxynum = proxynum+1
+print(str(canlogin))
