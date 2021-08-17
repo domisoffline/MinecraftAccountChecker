@@ -7,18 +7,6 @@ init()
 failedToLogin = True
 debugmode = False # Warning! Enabling This Will Expose Your Auth Keys, Tokens are Other Sensitive Info in the Console. Because of this, it is recommended you leave this off for normal usage.
 token = ''
-
-print(f"""{Fore.CYAN}
-   ___            _                     _      ___ _               _             
-  / __\ __ _  ___| | ___ __   __ _  ___| | __ / __\ |__   ___  ___| | _____ _ __ 
- /__\/// _` |/ __| |/ / '_ \ / _` |/ __| |/ // /  | '_ \ / _ \/ __| |/ / _ \ '__|
-/ \/  \ (_| | (__|   <| |_) | (_| | (__|   </ /___| | | |  __/ (__|   <  __/ |   
-\_____/\__,_|\___|_|\_\ .__/ \__,_|\___|_|\_\____/|_| |_|\___|\___|_|\_\___|_|   
-                      |_|                                                        
-
-By RandomBackpack
-""")
-
 with open('.\\valid.txt', 'w+') as f:
     f.truncate()
 failedToLogin = False
@@ -83,6 +71,7 @@ def checkNameChange(proxy):
     if failedToLogin != True:
         if r.json()['nameChangeAllowed'] == True:
             namechange = True
+            print(f'TEST {email}')
             if debugmode == True:
                 print(r.json())
         elif r.json()['nameChangeAllowed'] == False:
@@ -105,10 +94,7 @@ with open('.\\accounts.txt', 'r') as f:
         password = password.strip()
         with open('.\\proxies.txt', 'r') as proxyfile:
             lineproxy = proxyfile.readlines()[proxynum]
-            try:
-                accessToken('http://' + lineproxy + '/')
-            except:
-                continue
+            accessToken('http://' + lineproxy + '/')
             if debugmode == True:
                     print(f'Proxy Used: {lineproxy}')
             proxynum = proxynum+1
@@ -126,4 +112,12 @@ with open('.\\accounts.txt', 'r') as f:
                     namechange = 'True'
                 else:
                     namechange = 'False'
+            if failedToLogin == False:
+                print(f"""
+Email: {email}
+Password: {password}
+Username: {username}
+Namechange: {namechange}
+                """)
             proxynum = proxynum+1
+print(str(canlogin))
