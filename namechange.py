@@ -97,33 +97,36 @@ def checkNameChange(proxy):
         pass
 
     r = requests.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers=headers, proxies={'http' : f'{proxy}'})
-with open('.\\accounts.txt', 'r') as f:
-    proxynum = 0
-    for line in f:
-        email, password = line.split(':')
-        email = email.strip()
-        password = password.strip()
-        with open('.\\proxies.txt', 'r') as proxyfile:
-            lineproxy = proxyfile.readlines()[proxynum]
-            try:
-                accessToken('http://' + lineproxy + '/')
-            except:
-                continue
-            if debugmode == True:
-                    print(f'Proxy Used: {lineproxy}')
-            proxynum = proxynum+1
-            if failedToLogin == False:
-                getUsername('http://' + lineproxy + '/')
+try:
+    with open('.\\accounts.txt', 'r') as f:
+        proxynum = 0
+        for line in f:
+            email, password = line.split(':')
+            email = email.strip()
+            password = password.strip()
+            with open('.\\proxies.txt', 'r') as proxyfile:
+                lineproxy = proxyfile.readlines()[proxynum]
+                try:
+                    accessToken('http://' + lineproxy + '/')
+                except:
+                    failedToLogin = False
                 if debugmode == True:
-                    print(f'Proxy Used: {lineproxy}')
+                        print(f'Proxy Used: {lineproxy}')
                 proxynum = proxynum+1
-            checkNameChange('http://' + lineproxy + '/')
-            if debugmode == True:
-                    print(f'Proxy Used: {lineproxy}')
-            proxynum = proxynum+1
-            if failedToLogin == False:
-                if namechange == True:
-                    namechange = 'True'
-                else:
-                    namechange = 'False'
-            proxynum = proxynum+1
+                if failedToLogin == False:
+                    getUsername('http://' + lineproxy + '/')
+                    if debugmode == True:
+                        print(f'Proxy Used: {lineproxy}')
+                    proxynum = proxynum+1
+                checkNameChange('http://' + lineproxy + '/')
+                if debugmode == True:
+                        print(f'Proxy Used: {lineproxy}')
+                proxynum = proxynum+1
+                if failedToLogin == False:
+                    if namechange == True:
+                        namechange = 'True'
+                    else:
+                        namechange = 'False'
+                proxynum = proxynum+1
+except:
+    print("\nFailed.\n")
