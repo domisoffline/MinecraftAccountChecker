@@ -5,9 +5,8 @@ from colorama import init, Style, Fore
 from datetime import datetime
 init()
 failedToLogin = True
-debugmode = False # Warning! Enabling This Will Expose Your Auth Keys, Tokens are Other Sensitive Info in the Console. Because of this, it is recommended you leave this off for normal usage.
+debugmode = True # Warning! Enabling This Will Expose Your Auth Keys, Tokens are Other Sensitive Info in the Console. Because of this, it is recommended you leave this off for normal usage.
 token = ''
-
 print(f"""{Fore.CYAN}
    ___            _                     _      ___ _               _             
   / __\ __ _  ___| | ___ __   __ _  ___| | __ / __\ |__   ___  ___| | _____ _ __ 
@@ -98,37 +97,34 @@ def checkNameChange(proxy):
 
     r = requests.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers=headers, proxies={'http' : f'{proxy}'})
 
-    with open('.\\accounts.txt', 'r') as f:
-        proxynum = 0
-        for line in f:
-            
-            email, password = line.split(':')
-            email = email.strip()
-            password = password.strip()
-            with open('.\\proxies.txt', 'r') as proxyfile:
-                lineproxy = proxyfile.readlines()[proxynum]
-                try:
-                    try:
-                        accessToken('http://' + lineproxy + '/')
-                    except:
-                        failedToLogin = False
-                    if debugmode == True:
-                            print(f'Proxy Used: {lineproxy}')
-                    proxynum = proxynum+1
-                    if failedToLogin == False:
-                        getUsername('http://' + lineproxy + '/')
-                        if debugmode == True:
-                            print(f'Proxy Used: {lineproxy}')
-                        proxynum = proxynum+1
-                    checkNameChange('http://' + lineproxy + '/')
-                    if debugmode == True:
-                            print(f'Proxy Used: {lineproxy}')
-                    proxynum = proxynum+1
-                    if failedToLogin == False:
-                        if namechange == True:
-                            namechange = 'True'
-                        else:
-                            namechange = 'False'
-                    proxynum = proxynum+1
-                except:
-                    print("\nFailed.\n")
+proxynum = 0
+print("Starting...")
+fline = None
+with open('.\\proxies.txt', 'r') as proxyfile:
+    lineproxy = proxyfile.readlines()[proxynum]
+with open('.\\accounts.txt', 'r') as f:
+    kine = fline
+    for fline in f:
+        email, password = fline.split(':')
+        email = email.strip()
+        password = password.strip()
+        with open('.\\proxies.txt', 'r') as proxyfile:
+            try:
+                accessToken('http://' + lineproxy + '/')
+            except:
+                continue
+            if debugmode == True:
+                    print(f'Proxy Used: {lineproxy}')
+            if failedToLogin == False:
+                getUsername('http://' + lineproxy + '/')
+                if debugmode == True:
+                    print(f'Proxy Used: {lineproxy}')
+            checkNameChange('http://' + lineproxy + '/')
+            if debugmode == True:
+                    print(f'Proxy Used: {lineproxy}')
+            if failedToLogin == False:
+                if namechange == True:
+                    namechange = 'True'
+                else:
+                    namechange = 'False'
+        proxynum = proxynum+1
