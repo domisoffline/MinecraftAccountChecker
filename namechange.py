@@ -40,8 +40,6 @@ def accessToken(proxy):
             print(response_json)
         failedToLogin = False
         canlogin.append(email)
-        with open('.\\valid.txt', 'a') as f:
-            f.write(f'{email}:{password}\n')
         pass
     except:
         failedToLogin = True
@@ -71,7 +69,8 @@ def checkNameChange(proxy):
     if failedToLogin != True:
         if r.json()['nameChangeAllowed'] == True:
             namechange = True
-            print(f'TEST {email}')
+            with open('.\\valid.txt', 'a') as f:
+                f.write(f'{email}:{password}\n')
             if debugmode == True:
                 print(r.json())
         elif r.json()['nameChangeAllowed'] == False:
