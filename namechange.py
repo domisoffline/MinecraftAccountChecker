@@ -94,30 +94,33 @@ with open('.\\accounts.txt', 'r') as f:
         password = password.strip()
         with open('.\\proxies.txt', 'r') as proxyfile:
             lineproxy = proxyfile.readlines()[proxynum]
-            accessToken('http://' + lineproxy + '/')
-            if debugmode == True:
-                    print(f'Proxy Used: {lineproxy}')
-            proxynum = proxynum+1
-            if failedToLogin == False:
-                getUsername('http://' + lineproxy + '/')
+            try:
+                accessToken('http://' + lineproxy + '/')
                 if debugmode == True:
-                    print(f'Proxy Used: {lineproxy}')
+                        print(f'Proxy Used: {lineproxy}')
                 proxynum = proxynum+1
-            checkNameChange('http://' + lineproxy + '/')
-            if debugmode == True:
-                    print(f'Proxy Used: {lineproxy}')
-            proxynum = proxynum+1
-            if failedToLogin == False:
-                if namechange == True:
-                    namechange = 'True'
-                else:
-                    namechange = 'False'
-            if failedToLogin == False:
-                print(f"""
-Email: {email}
-Password: {password}
-Username: {username}
-Namechange: {namechange}
-                """)
-            proxynum = proxynum+1
+                if failedToLogin == False:
+                    getUsername('http://' + lineproxy + '/')
+                    if debugmode == True:
+                        print(f'Proxy Used: {lineproxy}')
+                    proxynum = proxynum+1
+                checkNameChange('http://' + lineproxy + '/')
+                if debugmode == True:
+                        print(f'Proxy Used: {lineproxy}')
+                proxynum = proxynum+1
+                if failedToLogin == False:
+                    if namechange == True:
+                        namechange = 'True'
+                    else:
+                        namechange = 'False'
+                if failedToLogin == False:
+                    print(f"""
+    Email: {email}
+    Password: {password}
+    Username: {username}
+    Namechange: {namechange}
+                    """)
+                proxynum = proxynum+1
+            except:
+                pass
 print(str(canlogin))
