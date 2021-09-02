@@ -85,6 +85,18 @@ def checkNameChange(proxy):
         pass
 
     r = requests.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers=headers, proxies={'http' : f'{proxy}'})
+def checkMigration(proxy):
+    global canMigrate
+    headers = {
+        "Authorization" : f"Bearer {token}"
+    }
+    r = requests.get("https://api.minecraftservices.com/rollout/v1/msamigration", headers=headers, proxies={'http' : f'{proxy}'})
+    if failedToLogin != True:
+        if r.json()['rollout'] == True:
+            canMigrate = True
+        else:
+            canMigrate = False
+
 with open('.\\accounts.txt', 'r') as f:
     proxynum = 0
     for line in f:
@@ -93,33 +105,47 @@ with open('.\\accounts.txt', 'r') as f:
         password = password.strip()
         with open('.\\proxies.txt', 'r') as proxyfile:
             lineproxy = proxyfile.readlines()[proxynum]
+            accessToken('http://' + lineproxy + '/')
+            if debugmode == True:
+                    print(f'Proxy Used: {lineproxy}')
+            proxynum = proxynum+1
             try:
-                accessToken('http://' + lineproxy + '/')
-                if debugmode == True:
-                        print(f'Proxy Used: {lineproxy}')
-                proxynum = proxynum+1
                 if failedToLogin == False:
                     getUsername('http://' + lineproxy + '/')
                     if debugmode == True:
                         print(f'Proxy Used: {lineproxy}')
                     proxynum = proxynum+1
+            except:
+                pass
+            try:
                 checkNameChange('http://' + lineproxy + '/')
+            except:
+                pass
+            try:
                 if debugmode == True:
                         print(f'Proxy Used: {lineproxy}')
-                proxynum = proxynum+1
+                        proxynum = proxynum+1
+            except:
+                pass
+            try:
                 if failedToLogin == False:
                     if namechange == True:
                         namechange = 'True'
                     else:
                         namechange = 'False'
-                if failedToLogin == False:
-                    print(f"""
-    Email: {email}
-    Password: {password}
-    Username: {username}
-    Namechange: {namechange}
-                    """)
-                proxynum = proxynum+1
             except:
                 pass
+            try:
+                checkMigration('http://' + lineproxy + '/')
+            except:
+                pass
+            if failedToLogin == False:
+                print(f"""
+Email: {email}
+Password: {password}
+Username: {username}
+Namechange: {namechange}
+Can Migrate: {str(canMigrate)}
+                """)
+            proxynum = proxynum+1
 print(str(canlogin))
