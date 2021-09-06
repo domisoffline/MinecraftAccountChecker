@@ -9,6 +9,7 @@ Hits = 0
 failedToLogin = True
 debugmode = False # Warning! Enabling This Will Expose Your Auth Keys, Tokens are Other Sensitive Info in the Console. Because of this, it is recommended you leave this off for normal usage.
 token = ''
+os.system(f"title "+f"Backpack Checker V1.5 l Hits: {Hits}")
 with open('.\\valid.txt', 'w+') as f:
     f.truncate()
 failedToLogin = False
@@ -77,8 +78,6 @@ def checkNameChange(proxy):
     if failedToLogin != True:
         if r.json()['nameChangeAllowed'] == True:
             namechange = True
-            with open('.\\valid.txt', 'a') as f:
-                f.write(f'{email}:{password}\n')
             if debugmode == True:
                 print(r.json())
         elif r.json()['nameChangeAllowed'] == False:
@@ -177,6 +176,8 @@ with open('.\\accounts.txt', 'r') as f:
     Namechange: {namechange}
     Can Migrate: {str(canMigrate)}
                     """)
+                    with open('.\\valid.txt', 'a') as f:
+                        f.write(f'[{accountType}] {email}:{password}  | Username : {username} | Namechange: {namechange} | Can Migrate: {str(canMigrate)}\n')
                 proxynum = proxynum+1
                 
             else:
