@@ -109,13 +109,11 @@ def checkAccountType(proxy):
     headers = {
         "Authorization" : f"Bearer {token}"
     }
-    r = requests.get("https://api.mojang.com/user/security/location", headers=headers, proxies={'http' : f'{proxy}'})
-    if r.status_code == 403:
-        accountType = "NFA"
-    elif r.status_code == 204:
+    r = requests.get("https://api.mojang.com//user/security/challenges", headers=headers, proxies={'http' : f'{proxy}'})
+    if str(r.json()) == "[]":
         accountType = "SFA"
     else:
-        pass
+        accountType = "NFA"
 
 
 # Main bit lol
